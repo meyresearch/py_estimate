@@ -82,8 +82,8 @@ def test_toy_model():
     assert_raises(NotConvergedWarning, dtram.sc_iteration, maxiter=1, ftol=1.0E-80, verbose=False)
     dtram.sc_iteration(maxiter=200000, ftol=1.0E-15, verbose=True)
     pi = np.array([1.82026887e-02, 3.30458960e-04, 9.81466852e-01], dtype=np.float64)
-    print pi
-    print dtram.pi_i
+    print(pi)
+    print(dtram.pi_i)
     assert_true(np.max(np.abs(dtram.pi_i - pi)) < 1.0E-8)
 
 
