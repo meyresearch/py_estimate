@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 ================================
-The pyfeat package documentation
+The py_estimate package documentation
 ================================
 
 Contents:

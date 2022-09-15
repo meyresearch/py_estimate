@@ -1,6 +1,6 @@
 ################################################################################
 #
-#   test_wham.py - testing the pyfeat wham class
+#   test_wham.py - testing the py_estimate WHAM class
 #
 #   author: Christoph Wehmeyer <christoph.wehmeyer@fu-berlin.de>
 #   author: Antonia Mey <antonia.mey@fu-berlin.de>
@@ -8,7 +8,7 @@
 ################################################################################
 
 from nose.tools import assert_raises, assert_true
-from pyfeat.estimator import WHAM
+from py_estimate.estimator import WHAM
 from pytram import ExpressionError, NotConvergedWarning
 import numpy as np
 

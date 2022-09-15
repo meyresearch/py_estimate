@@ -1,8 +1,8 @@
 
-# raise the Reader class onto the pyfeat package level
+# raise the Reader class onto the py_estimate package level
 from .reader import Reader
 
-# raise the Forge class onto the pyfeat package level
+# raise the Forge class onto the py_estimate package level
 from .forge import Forge
 
 #raise API functions onto package level

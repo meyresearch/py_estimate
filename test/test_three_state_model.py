@@ -1,13 +1,13 @@
 ################################################################################
 #
-#   test_three_state_model.py - testing pyfeat with a simple three state model
+#   test_three_state_model.py - testing py_estimate with a simple three state model
 #
 #   author: Christoph Wehmeyer <christoph.wehmeyer@fu-berlin.de>
 #
 ################################################################################
 
 from nose.tools import assert_raises, assert_true, assert_equal
-from pyfeat import Forge, dtram, xtram, wham
+from py_estimate import Forge, dtram, xtram, wham
 import numpy as np
 from numpy.testing import assert_allclose
 

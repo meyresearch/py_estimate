@@ -21,7 +21,7 @@ Go to your shell and type
 
 .. code-block:: bash
 
-   git clone https://github.com/markovmodel/pyfeat.git
+   git clone https://github.com/meyresearch/py_estimate.git
 
 Then, install the package from source.
 
@@ -60,10 +60,10 @@ Go to your shell and type
 
 .. code-block:: bash
 
-   pip install pyfeat
+   pip install py_estimate
 
 or
 
 .. code-block:: bash
 
-   easy_install pyfeat
+   easy_install py_estimate

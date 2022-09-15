@@ -4,7 +4,7 @@ import versioneer
 
 setup(
     cmdclass=versioneer.get_cmdclass(),
-    name='pyfeat',
+    name='py_estimate',
     version=versioneer.get_version(),
     description='The python free energy analysis toolkit',
     long_description='Commandline toolkit that allows the use of different free energy estimators using a single format',
@@ -26,21 +26,21 @@ setup(
         ],
     keywords=[ 'TRAM', 'WHAM', 'free energy' ],
     url='http://github.com/meyresearch/py_estimate',
-    author='The pyfeat team',
+    author='The py_estimate team',
     author_email='antonia.mey@ed.ac.uk',
     license='Simplified BSD License',
     setup_requires=[ 'numpy>=1.7.1', 'setuptools>=0.6' ],
     tests_require=[ 'numpy>=1.7.1', 'nose>=1.3' ],
     install_requires=[ 'numpy>=1.7.1' ],
     packages=[
-            'pyfeat',
-            'pyfeat.reader',
-            'pyfeat.forge',
-            'pyfeat.estimator',
-            'pyfeat.api'
+            'py_estimate',
+            'py_estimate.reader',
+            'py_estimate.forge',
+            'py_estimate.estimator',
+            'py_estimate.api'
         ],
     test_suite='nose.collector',    
     scripts=[
-            'bin/run_pyfeat.py'
+            'bin/run_py_estimate.py'
         ]
 )

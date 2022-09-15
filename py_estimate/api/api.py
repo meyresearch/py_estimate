@@ -1,7 +1,7 @@
 r"""
 
 ==========================
-API for the pyfeat package
+API for the py_estimate package
 ==========================
 
 .. moduleauthor:: Antonia Mey <antonia.mey@fu-berlin.de>
@@ -74,7 +74,7 @@ def wham(forge, maxiter=100, ftol=1.0E-5, verbose=False):
     Parameters
     ----------
     forge : object
-        data forge or container for pyfeat input data
+        data forge or container for py_estimate input data
     maxiter : int
         maximum number of SC iteration steps during the optimisation of the stationary probabilities
     ftol : float (> 0.0)
@@ -144,7 +144,7 @@ def dtram(forge, lag=1,  maxiter=100, ftol=1.0e-5, verbose=False):
     Parameters
     ----------
     forge : object
-        data forge or container for pyfeat input data
+        data forge or container for py_estimate input data
     lag : int
         lagtime at which the countmatrix is estimated
     maxiter : int
@@ -220,7 +220,7 @@ def dtram(forge, lag=1,  maxiter=100, ftol=1.0e-5, verbose=False):
 #    Parameters
 #    ----------
 #    forge : object
-#        data forge or container for pyfeat input data
+#        data forge or container for py_estimate input data
 #    maxiter : int
 #        maximum number of SC iteration steps during the optimisation of the stationary probabilities
 #    ftol : float (> 0.0)
@@ -296,7 +296,7 @@ def xtram(forge, lag=1, maxiter=100, ftol=1.0e-5, verbose=False):
     Parameters
     ----------
     forge : object
-        data forge or container for pyfeat input data
+        data forge or container for py_estimate input data
     lag : int
         lagtime at which the countmatrix is estimated
     maxiter : int
@@ -362,7 +362,7 @@ def convert_data(trajs, b_K_i=None, kT_K=None, kT_target=None):
 
     Returns
     -------
-    forge : pyfeat.Forge object
+    forge : py_estimate.Forge object
         container holding all data
     """
     forge = Forge(trajs, b_K_i, kT_K, kT_target)
@@ -395,7 +395,7 @@ def read_files(files, b_K_i_file=None, kT_file=None, skiprows=0, maxlength=None,
 
     Returns
     -------
-    reader : pyfeat.Reader object
+    reader : py_estimate.Reader object
         augmented trajectory information to be passed to the forge
     """
     reader = Reader(files, b_K_i_file, kT_file, skiprows, maxlength, verbose)

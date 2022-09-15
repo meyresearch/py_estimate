@@ -87,7 +87,7 @@ Using the API, we can run WHAM via the following code (DTRAM works in the same w
 .. code-block:: python
 
    # import the Reader, Forge and the wham API function
-   from pyfeat import Reader, Forge, wham
+   from py_estimate import Reader, Forge, wham
 
    # specify your input data files
    files = [ 
@@ -118,11 +118,11 @@ from file using the runscript
 
 Or we can run WHAM with the runscript in the following way from the commandline (DTRAM would will work in the same way using DTRAM as the commanline parameter for the ``--estimator`` flag):
 
-``run_pyfeat file*.dat --estimator WHAM --b_K_i_file b_K_i.dat --maxiter=1000 --ftol 1.0E-5``
+``run_py_estimate file*.dat --estimator WHAM --b_K_i_file b_K_i.dat --maxiter=1000 --ftol 1.0E-5``
 
 For all options given in the runscript, use:
 
-``run_pyfeat --help``
+``run_py_estimate --help``
 
 
 

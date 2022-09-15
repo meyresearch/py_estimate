@@ -1,13 +1,13 @@
 ################################################################################
 #
-#   test_dtram.py - testing the pyfeat dtram class
+#   test_dtram.py - testing the py_estimate dTRAM class
 #
 #   author: Christoph Wehmeyer <christoph.wehmeyer@fu-berlin.de>
 #
 ################################################################################
 
 from nose.tools import assert_raises, assert_true
-from pyfeat.estimator import DTRAM
+from py_estimate.estimator import DTRAM
 from pytram import ExpressionError, NotConvergedWarning
 import numpy as np
 

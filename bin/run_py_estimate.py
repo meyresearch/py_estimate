@@ -2,7 +2,7 @@
 
 ####################################################################################################
 #                                                                                                  #
-#   RUN SCRIPT FOR THE ALL ESTIMATORS IN THE PYFEATPACKAGE                                         #
+#   RUN SCRIPT FOR THE ALL ESTIMATORS IN THE PY_ESTIMATE PACKAGE                                         #
 #                                                                                                  #
 #    author: Antonia Mey <antonia.mey@fu-berlin.de>                                                #
 #    author: Christoph Wehmeyer <christoph.wehmeyer@fu-berlin.de>                                  #
@@ -17,8 +17,8 @@
 #
 ####################################################################################################
 
-from pyfeat import Reader, Forge
-from pyfeat.estimator import WHAM, XTRAM, DTRAM
+from py_estimate import Reader, Forge
+from py_estimate.estimator import WHAM, XTRAM, DTRAM
 from pytram import ExpressionError, NotConvergedWarning
 from argparse import ArgumentParser, FileType
 from sys import exit
@@ -42,7 +42,7 @@ if '__main__' == __name__:
     parser = ArgumentParser()
     parser.add_argument(
             'files',
-            help='pyfeat compatible files for evaluation (trajectory files)',
+            help='py_estimate compatible files for evaluation (trajectory files)',
             nargs='*',
             metavar='FILE'
         )
@@ -138,7 +138,7 @@ if '__main__' == __name__:
     #   write header
     #
     ############################################################################
-    print("\n\n###################################### PYFEAT ######################################")
+    print("\n\n###################################### PY_ESTIMATE ######################################")
     print(("#\n#                          Invoking the %s estimator" %args.estimator))
     print("#\n### PARAMETERS\n#")
     print(("# %25s %24d" % ( "[--lag]", args.lag )))
@@ -228,7 +228,7 @@ if '__main__' == __name__:
         print("# ... converged!")
     except NotConvergedWarning as e:
         print("#\n### WARNING\n#\n# %s is not converged - use these results carefuly!" %args.estimator)
-        print("#\n### RECOMMENDATION\n#\n# Run run_pyfeat.py again and increase --maxiter")
+        print("#\n### RECOMMENDATION\n#\n# Run run_py_estimate.py again and increase --maxiter")
 
 
 
@@ -259,7 +259,7 @@ if '__main__' == __name__:
     #
     ############################################################################
     print("#\n###################That's it, now it is time to put the kettle on ##############################\n#")
-    print("#\n#                  Thank you for using %s in the pyfeat package!\n#\n#" %args.estimator)
+    print("#\n#                  Thank you for using %s in the py_estimate package!\n#\n#" %args.estimator)
     print("### CITATION\n#")
     estimator.cite( pre="#    " )
     print("#\n################################################################################################\n\n")

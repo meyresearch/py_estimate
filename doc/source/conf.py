@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# pyfeat documentation build configuration file, created by
+# py_estimate documentation build configuration file, created by
 # sphinx-quickstart on Wed Feb  4 14:05:25 2015.
 #
 # This file is execfile()d with the current directory set to its
@@ -49,7 +49,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'pyfeat'
+project = u'py_estimate'
 copyright = u'2015, Antonia Mey, Christoph Wehmeyer, Fabian Paul, Hao Wu, Frank Noé'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -187,7 +187,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'pyfeatdoc'
+htmlhelp_basename = 'py_estimate_doc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -207,7 +207,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'pyfeat.tex', u'pyfeat Documentation',
+  ('index', 'py_estimate.tex', u'py_estimate Documentation',
    u'Antonia Mey, Christoph Wehmeyer, Fabian Paul, Hao Wu, Frank Noé', 'manual'),
 ]
 
@@ -237,7 +237,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'pyfeat', u'pyfeat Documentation',
+    ('index', 'py_estimate', u'py_estimate Documentation',
      [u'Antonia Mey, Christoph Wehmeyer, Fabian Paul, Hao Wu, Frank Noé'], 1)
 ]
 
@@ -251,8 +251,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'pyfeat', u'pyfeat Documentation',
-   u'Antonia Mey, Christoph Wehmeyer, Fabian Paul, Hao Wu, Frank Noé', 'pyfeat', 'One line description of project.',
+  ('index', 'py_estimate', u'py_estimate Documentation',
+   u'Antonia Mey, Christoph Wehmeyer, Fabian Paul, Hao Wu, Frank Noé', 'py_estimate', 'One line description of project.',
    'Miscellaneous'),
 ]
 
