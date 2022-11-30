@@ -7,7 +7,7 @@ TRAM estimator wrapper
 
 """
 
-import pytram as pt
+#import pytram as pt
 import numpy as np
 
 class TRAM( object ):
@@ -31,7 +31,7 @@ class TRAM( object ):
         """
         try:
             self._tram_obj = pt.TRAM( C_K_ij, b_K_x, M_x, N_K_i )
-        except AttributeError as e:
+        except AttributeError:
             raise NotImplementedError( "The TRAM estimator is not yet implemented in the pytram package" )
 
     def sc_iteration( self , maxiter=100, ftol=1.0E-5, verbose=False ):

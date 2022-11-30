@@ -11,11 +11,9 @@ Example Data factory
 
 """
 
-
 #imports
 import numpy as np
 from scipy.integrate import quad
-import math
 import os
 
 
@@ -242,9 +240,10 @@ def run_st_simulation():
     traj = np.array(replica.trajectory)
 
     n_traj_frames =  np.shape(replica.trajectory)[0] 
+        
     fh = open( directory+"Traj.dat", 'w' )
     for t in range( n_traj_frames ):
-       fh.write( "%6d %6d %+.6e" % ( discretize( traj[t,0], dwp.inner_edges ), traj[t,1], traj[t,2] / kT[traj[t,1]] ) )
+       fh.write( "%6d %6d %+.6e" % ( discretize( traj[t,0], dwp.inner_edges ), traj[t,1], traj[t,2] / kT[int(traj[t,1])] ) )
        fh.write( "\n" )
     fh.close()
     np.savetxt(directory+"kT.dat", kT)
@@ -284,7 +283,7 @@ def run_us_simulation():
     nsteps=1000
 
     dwp = AssymetricDoubleWellPotential()
-    Z = dwp.get_partition_function(kT)
+    #Z = dwp.get_partition_function(kT)
     #exact probability distribution for comparison
     e_file = os.path.join(directory,"exact.dat")
     fh = open( e_file, 'w' )
@@ -325,4 +324,11 @@ def run_us_simulation():
            fh.write( " %+.8e" % ( restraints[i].energy( dwp.bin_centers[c] ) / kT[0] ) )
        fh.write( "\n" )
     fh.close()
-
+    
+    
+if __name__ == "__main__":
+    
+    #generates simulated tempering data for pyfeat in the directory ST/
+    run_st_simulation()
+    run_us_simulation()
+    

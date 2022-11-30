@@ -7,73 +7,226 @@ dTRAM estimator wrapper
 
 """
 
-import pytram as pt
+import numpy as np
+from py_estimate.errors import NotConvergedWarning, ExpressionError
+from .ext import log_nu_K_i_setter, log_nu_K_i_equation, f_i_equation, p_K_ij_equation, f_K_equation
 
+
+####################################################################################################
+#
+#   DTRAM ESTIMATOR CLASS
+#
+####################################################################################################
 
 class DTRAM(object):
     r"""
-    I am the dTRAM wrapper
+    This is the DTRAM class
+
+    Parameters
+    ----------
+    C_K_ij : numpy.ndarray( shape=(T,M,M), dtype=numpy.intc )
+        transition counts between the M discrete Markov states for each of the T
+        thermodynamic ensembles
+    b_K_i : numpy.ndarray( shape=(T,M), dtype=numpy.float64 )
+        bias energies in the T thermodynamic and M discrete Markov states
     """
+
     def __init__(self, C_K_ij, b_K_i):
-        r"""
-        Initialize the DTRAM object
+        
+        if self._check_C_K_ij(C_K_ij):
+            self.C_K_ij = C_K_ij
+            
+        # if we reach this point, C_K_ij is safe
+        self.n_therm_states = C_K_ij.shape[0]
+        self.n_markov_states = C_K_ij.shape[1]
+        
+        
+        # this check raises an exception if b_K_i is not usable
+        if self._check_b_K_i(b_K_i):
+            self._b_K_i = b_K_i
+        # hard-coded initial guess for pi_i and nu_K_i
+        self._f_i = np.zeros(shape=(self.n_markov_states,), dtype=np.float64)
+        self._log_nu_K_i = np.zeros(
+            shape=(self.n_therm_states, self.n_markov_states), dtype=np.float64)
+        log_nu_K_i_setter(self._log_nu_K_i, self.C_K_ij)
+        # citation information
+        self.citation = [
+            "Statistically optimal analysis of state-discretized trajectory data",
+            "from multiple thermodynamic states;",
+            "Hao Wu, Antonia S.J.S. Mey, Edina Rosta, and Frank Noe",
+            "J. Chem. Phys. 141, 214106 (2014)"]
 
-        Parameters
-        ----------
-        C_K_ij : numpy.ndarray(shape=(T, M, M), dtype=numpy.intc)
-            transition counts between the M discrete Markov states for each of
-            the T thermodynamic ensembles
-        b_K_i : numpy.ndarray(shape=(T, M), dtype=numpy.float64)
-            bias energies in the T thermodynamic and M discrete Markov states
-        """
-        self._dtram_obj = pt.DTRAM(C_K_ij, b_K_i)
 
-    def sc_iteration(self, maxiter=100, ftol=1.0e-5, verbose=False):
-        r"""
-        sc_iteration function
+    def cite(self, pre=""):
+        for line in self.citation:
+            print("%s%s" % (pre, line))
 
-        Parameters
-        ----------
-        maxiter : int
-            maximum number of self-consistent-iteration steps
-        ftol : float (> 0.0)
-            convergence criterion based on the max relative change in an self-consistent-iteration step
-        verbose : boolean
-            Be loud and noisy
-        """
-        self._dtram_obj.sc_iteration(ftol=ftol, maxiter=maxiter, verbose=verbose)
 
-    @property
-    def pi_i(self):
-        return self._dtram_obj.pi_i
+    def _check_C_K_ij( self, C_K_ij ):
+        
+        if C_K_ij is None:
+            raise ExpressionError("C_K_ij", "is None")
+        if not isinstance(C_K_ij, (np.ndarray,)):
+            raise ExpressionError("C_K_ij", "invalid type (%s)" % str(type(C_K_ij)))
+        if 3 != C_K_ij.ndim:
+            raise ExpressionError("C_K_ij", "invalid number of dimensions (%d)" % C_K_ij.ndim)
+        if C_K_ij.shape[1] != C_K_ij.shape[2]:
+            raise ExpressionError(
+                "C_K_ij",
+                "unmatching number of markov states (%d,%d)" % (C_K_ij.shape[1], C_K_ij.shape[2]))
+        if np.intc != C_K_ij.dtype:
+            raise ExpressionError("C_K_ij", "invalid dtype (%s)" % str(C_K_ij.dtype))
+        if not np.all(C_K_ij.sum(axis=(0, 2)) > 0):
+            raise ExpressionError("C_K_ij", "contains unvisited states")
+        # TODO: strong connectivity check?
+        return True
 
-    @property
-    def pi_K_i(self):
-        return self._dtram_obj.pi_K_i
 
-    @property
-    def f_K(self):
-        return self._dtram_obj.f_K
-
-    @property
-    def f_K_i(self):
-        return self._dtram_obj.f_K_i
+    def _check_b_K_i(self, b_K_i):
+        if b_K_i is None:
+            raise ExpressionError("b_K_i", "is None")
+        if not isinstance(b_K_i, (np.ndarray,)):
+            raise ExpressionError("b_K_i", "invalid type (%s)" % str(type(b_K_i)))
+        if 2 != b_K_i.ndim:
+            raise ExpressionError("b_K_i", "invalid number of dimensions (%d)" % b_K_i.ndim)
+        if b_K_i.shape[0] != self.n_therm_states:
+            raise ExpressionError("b_K_i", "not matching number of thermodynamic states (%d,%d)" \
+                % (b_K_i.shape[0], self._n_therm_states))
+        if b_K_i.shape[1] != self.n_markov_states:
+            raise ExpressionError("b_K_i", "not matching number of markov states (%d,%d)" \
+                % (b_K_i.shape[1], self.n_markov_states))
+        if np.float64 != b_K_i.dtype:
+            raise ExpressionError("b_K_i", "invalid dtype (%s)" % str(b_K_i.dtype))
+        return True
 
     @property
     def f_i(self):
-        return self._dtram_obj.f_i
+        return self._f_i
 
     @property
-    def n_therm_states(self):
-        return self._dtram_obj.n_therm_states
+    def f_K_i(self):
+        return -self.f_K[:, np.newaxis] + self._b_K_i + self._f_i[np.newaxis, :]
 
     @property
-    def n_markov_states(self):
-        return self._dtram_obj.n_markov_states
+    def f_K(self):
+        _f_K = np.zeros(shape=(self.n_therm_states,), dtype=np.float64)
+        scratch_j = np.zeros(shape=(self.n_markov_states,), dtype=np.float64)
+        f_K_equation(self._b_K_i, self._f_i, scratch_j, _f_K)
+        return -_f_K
+
 
     @property
-    def citation(self):
-        return self._dtram_obj.citation
+    def pi_i(self):
+        return np.exp(-self.f_i)
 
-    def cite(self, pre=""):
-        self._dtram_obj.cite(pre=pre)
+    @property
+    def pi_K_i(self):
+        return np.exp(-self.f_K_i)
+
+
+    ############################################################################
+    #
+    #   getters for dTRAM-specific properties
+    #
+    ############################################################################
+
+    @property
+    def b_K_i(self):
+        return self._b_K_i
+
+    @property
+    def gamma_K_i(self):
+        return np.exp(-self.b_K_i)
+
+    @property
+    def nu_K_i(self):
+        return np.exp(self._log_nu_K_i)
+
+    ############################################################################
+    #
+    #   self-consistent-iteration to converge pi_i
+    #
+    ############################################################################
+
+    def sc_iteration(self, maxiter=100, ftol=1.0E-5, verbose=False):
+        r"""
+        Run the self-consistent-iteration cycle to optimise the unbiased stationary
+        probabilities (and Langrange multipliers)
+        
+        Parameters
+        ----------
+        maxiter : int (default=100)
+            maximum number of self-consistent-iteration steps
+        ftol : float (default=1.0E-5)
+            convergence criterion based on the max relative change in an
+            self-consistent-iteration step
+        verbose : boolean (default=False)
+            writes convergence information to stdout during the self-consistent-iteration cycle
+        """
+        scratch_K_j = np.zeros(shape=(self.n_therm_states, self.n_markov_states), dtype=np.float64)
+        scratch_j = np.zeros(shape=(self.n_markov_states,), dtype=np.float64)
+        if verbose:
+            print("# %25s %25s" % ("[iteration step]", "[increment]"))
+        # start the iteration loop
+        for i in range(maxiter):
+            # iterate log_nu_K_i
+            tmp_log_nu_K_i = np.copy(self._log_nu_K_i)
+            log_nu_K_i_equation(
+                tmp_log_nu_K_i, self._b_K_i, self._f_i, self.C_K_ij, scratch_j, self._log_nu_K_i)
+            # iterate f_i
+            tmp_f_i = np.copy(self._f_i)
+            f_i_equation(
+                self._log_nu_K_i,
+                self._b_K_i,
+                tmp_f_i,
+                self.C_K_ij,
+                scratch_K_j,
+                scratch_j,
+                self._f_i)
+            # compute the absolute change of f_i
+            finc = np.max(np.abs(tmp_f_i - self._f_i))
+            # write out progress if requested
+            if verbose:
+                print(" %25d %25.12e" % (i+1, finc))
+            # break loop if we're converged
+            if finc < ftol:
+                break
+        # complain if we're not yet converged
+        if finc > ftol:
+            raise NotConvergedWarning("DTRAM", finc)
+
+    ############################################################################
+    #
+    #   transition matrix estimation
+    #
+    ############################################################################
+
+    def estimate_transition_matrices(self):
+        r"""
+        Estimate the transition matrices for all thermodynamic states
+        
+        Returns
+        -------
+        p_K_ij : numpy.ndarray( shape=(T,M,M), dtype=numpy.float64 )
+            the transition matrices for all thermodynamic states
+        """
+        p_K_ij = np.zeros(shape=self.C_K_ij.shape, dtype=np.float64)
+        scratch_j = np.zeros(shape=(self.n_markov_states,), dtype=np.float64)
+        p_K_ij_equation(self._log_nu_K_i, self._b_K_i, self._f_i, self.C_K_ij, scratch_j, p_K_ij)
+        return p_K_ij
+
+    def estimate_transition_matrix(self, I):
+        r"""
+        Estimate the transition matrices for one thermodynamic state
+        
+        Parameters
+        ----------
+        I : int
+            target thermodynamic state
+        
+        Returns
+        -------
+        p_K_ij[I] : numpy.ndarray( shape=(M,M), dtype=numpy.float64 )
+            the transition matrix for the Ith thermodynamic state
+        """
+        return self.estimate_transition_matrices()[I, :, :]

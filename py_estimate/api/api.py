@@ -9,8 +9,8 @@ API for the py_estimate package
 
 """
 
-from ..estimator import WHAM, XTRAM, DTRAM, TRAM
-from pytram import NotConvergedWarning, ExpressionError
+from ..estimator import WHAM, XTRAM, DTRAM#, TRAM
+from py_estimate.errors import NotConvergedWarning, ExpressionError
 from ..reader import Reader
 from ..forge import Forge
 

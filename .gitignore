@@ -1,2 +1,7 @@
 *.bak
 *.pyc
+
+py_estimate.egg-info
+build
+dist
+examples/*
