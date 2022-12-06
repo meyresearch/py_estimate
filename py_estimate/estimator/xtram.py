@@ -11,8 +11,11 @@ XTRAM estimator wrapper
 import numpy as np
 import warnings
 from py_estimate.errors import ExpressionError
-#from .ext import iterate_x #,b_i_IJ_equation
 
+try:
+    from .ext import iterate_x
+except:
+    pass
 
 class XTRAM(object):
     r"""
@@ -35,6 +38,7 @@ class XTRAM(object):
         target state for which pi_i should be computed
     """
     def __init__(self, C_K_ij, b_K_x, T_x, M_x, N_K_i, target=0):
+    
         
         if self._check_C_K_ij(C_K_ij):
             self.C_K_ij = C_K_ij
@@ -68,6 +72,11 @@ class XTRAM(object):
             "Antonia S.J.S. Mey, Hao Wu, and Frank Noe",
             "Phys. Rev. X 4, 041018 (2014)"]
 
+
+    def cite(self, pre=""):
+        for line in self.citation:
+            print("%s%s" % (pre, line))
+            
     ############################################################################
     #
     #   override getters for stationary properties
@@ -121,19 +130,25 @@ class XTRAM(object):
             N_tilde = self._compute_sparse_N()
             C_i, C_j, C_ij, C_ji = self._compute_individual_N()
             x_row, c_column = self._initialise_X_and_N(N_tilde)
-            ferr = iterate_x(
-                N_tilde.shape[0],
-                x_row.shape[0],
-                self._maxiter_inner,
-                self._ftol_inner,
-                C_i,
-                C_j,
-                C_ij,
-                C_ji,
-                x_row,
-                c_column,
-                x_row/x_row.sum())
-            #print 'ferr'+str( ferr )
+            
+            try:
+                ferr = iterate_x(
+                    N_tilde.shape[0],
+                    x_row.shape[0],
+                    self._maxiter_inner,
+                    self._ftol_inner,
+                    C_i,
+                    C_j,
+                    C_ij,
+                    C_ji,
+                    x_row,
+                    c_column,
+                    x_row/x_row.sum())
+                
+                print(f'ferr: {ferr}')
+            except:
+                pass
+            
             pi_curr = x_row / np.sum(x_row)
             self._update_pi_K_i(pi_curr)
             self._update_free_energies()
@@ -142,8 +157,10 @@ class XTRAM(object):
                 print(" %25d %25.12e" % (i+1, finc))
             if finc < ftol:
                 break
+            
         if finc > ftol:
             warnings.warn("XTRAM only reached increment %.3e" % finc)
+
 
     def _initialise_X_and_N(self, N_tilde):
         r"""
@@ -467,65 +484,7 @@ class XTRAM(object):
 
     def C_K_ij(self):
         return self._C_K_ij
-
-################################################################
-################################################################
-
-class XTRAM_old( object ):
-    r"""
-    I am the xTRAM wrapper
-    """
-    def __init__( self, C_K_ij, b_K_x, T_x, M_x, N_K_i, target=0 ):
-
-        r"""
-        Initialize the XTRAM object
-        
-        Parameters
-        ----------
-        C_K_ij : 3-D numpy array
-            Countmatrix for each thermodynamic state K
-        b_K_x : 2-D numpy array
-            Biasing tensor
-        T_x : 1-D numpy array
-            Thermodynamic state trajectory
-        M_x : 1-D numpy array
-            Markov state trajectories
-        N_K_i : 2-D numpy array
-            Number of markov samples in each thermodynamic state
-        """
-
-        self._xtram_obj = XTRAM( C_K_ij, b_K_x, T_x, M_x, N_K_i, target = 0 )
-        self.n_therm_states = np.shape(N_K_i)[0]
-        self.n_markov_states = np.shape(N_K_i)[1]
-
-
-    def sc_iteration( self, maxiter=100, ftol=1.0E-5, verbose=False ):
-        r"""
-        sc_iteration function
-
-        Parameters
-        ----------
-        maxiter : int
-            maximum number of self-consistent-iteration steps
-        ftol : float (> 0.0)
-            convergence criterion based on the max relative change in an self-consistent-iteration step
-        verbose : boolean
-            Be loud and noisy
-        """
-        self._xtram_obj.sc_iteration( maxiter, ftol, verbose)
-
-    @property
-    def pi_i( self ):
-        return self._xtram_obj.pi_i
-
-    @property
-    def pi_K_i( self ):
-        return self._xtram_obj.pi_K_i
-
-    @property
-    def f_K( self ):
-        return self._xtram_obj.f_K
-
+    
     @property
     def f_K_i( self ):
         return -np.log(self.pi_K_i)
@@ -549,11 +508,3 @@ class XTRAM_old( object ):
     @n_markov_states.setter
     def n_markov_states( self, n ):
         self._n_markov_states = n
-
-    @property
-    def citation( self ):
-        return self._xtram_obj.citation
-
-    def cite( self, pre="" ):
-        self._xtram_obj.cite( pre=pre )
-
