@@ -10,8 +10,9 @@ Currently the following algorithms are featured:
 
 - WHAM
 - DTRAM
+- xTRAM
 
-In future releases the list of available free energy algorithms will be extended. Watch this space!  
+In future releases the list of available free energy algorithms will be extended. Watch this space!
 
 ## Installation
 
